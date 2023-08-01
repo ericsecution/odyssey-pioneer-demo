@@ -1,9 +1,13 @@
+// src/components/App.tsx
+
 import React from 'react';
 import './App.css';
 import AnimeList from './AnimeList';
+import { GameProvider } from '../contexts/GameContext';
 
 function App() {
   return (
+    <GameProvider>
     <div className="App">
       <header className="App-header">
         Odyssey Pioneers - AniList Explorer
@@ -12,6 +16,7 @@ function App() {
         <AnimeList />
       </main>
     </div>
+    </GameProvider>
   );
 }
 
