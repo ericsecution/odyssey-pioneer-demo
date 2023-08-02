@@ -2,17 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -28,11 +17,104 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Buttons */
+.button-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
+
+.nav-button {
+  background-color: rgba(15, 82, 186, 0.2); /* Sapphire blue */
+  border: none;
+  color: #fff; /* white text */
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  width: auto;
+  height: auto;
+  left: auto;
+  right: auto;
+}
+
+.nav-button:first-child {
+  left: 10%;
+}
+.nav-button:last-child {
+  right: 10%;
+}
+
+.nav-button:hover {
+  background-color: rgba(46, 88, 148, 0.4); /* B'dazzled blue */
+}
+
+/* Card Layout */
+.anime-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.anime-card {
+  border: 1px solid #e1e4e8;
+  border-radius: 5px;
+  width: 250px;
+  margin: 1rem;
+  overflow: hidden;
+  perspective: 1500px; /* This enables 3D space for the children */
+  transform-style: preserve-3d; /* Trying to get the card to rotate in 3D space */
+  transition: transform 0.85s, opacity 0.85s;
+  animation: fadeIn 0.5s;
+}
+
+.anime-card:hover {
+  transform: none;
+}
+
+.anime-card img {
+  width: 100%;
+  height: auto;
+}
+
+.anime-card h3 {
+  font-size: 1.25rem;
+  margin: 1rem 0;
+}
+
+.anime-card p {
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.anime-card button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #5a30b5;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.anime-card button:hover {
+  background-color: #4a20a5;
+}
+
+/* Fade in effect */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+

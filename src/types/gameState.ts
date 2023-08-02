@@ -27,6 +27,7 @@ interface GameState {
     currentLocation: string;
     decisions: string[];
     encounters: Encounter[];
+    watchlist: number[];
 }
 
 export type { GameState, Encounter, Title };
