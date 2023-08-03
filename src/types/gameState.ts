@@ -26,6 +26,7 @@ interface GameState {
     };
     currentLocation: string;
     decisions: string[];
+    morale: number;
     encounters: Encounter[];
     watchlist: number[];
 }

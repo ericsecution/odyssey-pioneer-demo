@@ -15,6 +15,7 @@ export const initialGameState: GameState = {
     },
     currentLocation: 'Starting Point',
     decisions: [],
+    morale: 50,
     encounters: [],
     watchlist: [],
 };
