@@ -7,66 +7,77 @@ import { useGameState } from '../contexts/GameContext';
 import { GameState } from '../types/gameState';
 
 function AnimeList() {
-    const { loading, error, data } = useQuery(GET_ANIMES);
-    const [gameState, setGameState] = useGameState();
-    const [currentCard, setCurrentCard] = useState(0);
-    const [message, setMessage] = useState<string | null>(null);
-    const [remainingTime, setRemainingTime] = useState(300);
+	const { loading, error, data } = useQuery(GET_ANIMES);
+	const [gameState, setGameState] = useGameState();
+	const [currentCard, setCurrentCard] = useState(0);
+	const [message, setMessage] = useState<string | null>(null);
+	const [remainingTime, setRemainingTime] = useState(300);
+	const [dayComplete, setDayComplete] = useState(false);
+
+	const initialFuel = gameState.resources.fuel;
+	const initialFood = gameState.resources.food;
+	const initialMaterials = gameState.resources.materials;
+	const initialMorale = gameState.morale;
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setRemainingTime(prevTime => prevTime - 1);
-            if (remainingTime % 60 === 0) {
-                setGameState(prevState => ({
+            setRemainingTime((prevTime) => prevTime - 1);
+    
+            if (remainingTime <= 0) {
+                setDayComplete(true);
+                clearInterval(interval);  // End the interval when the timer reaches 0.
+            } else if (remainingTime % 60 === 0) {
+                setGameState((prevState) => ({
                     ...prevState,
                     resources: {
                         ...prevState.resources,
                         food: prevState.resources.food - 5,
-                        materials: prevState.resources.materials - 2
-                    }
+                        materials: prevState.resources.materials - 2,
+                    },
                 }));
-            }
-            if (remainingTime % 91 === 0) {
+            } else if (remainingTime % 91 === 0) {
                 const randomEvent = Math.random();
                 if (randomEvent >= 0.5) {
                     // Bonus Resources found!
-                    setGameState(prevState => ({
+                    setGameState((prevState) => ({
                         ...prevState,
                         resources: {
                             ...prevState.resources,
                             food: prevState.resources.food + 10,
-                            materials: prevState.resources.materials + 5
-                        }
+                            materials: prevState.resources.materials + 5,
+                        },
                     }));
-                    setMessage("Bonus Resources Found! +10 food, +5 materials!");
+                    setMessage(`Bonus: +10 food, +5 materials!`);
                 } else {
-                    // unexpected challenge 
-                    setGameState(prevState => ({
+                    // unexpected challenge
+                    setGameState((prevState) => ({
                         ...prevState,
                         shipStatus: {
                             ...prevState.shipStatus,
-                            damage: prevState.shipStatus.damage + 10
-                        }
+                            damage: prevState.shipStatus.damage + 10,
+                        },
                     }));
-                    setMessage("Unexpected challenge! Ship took damage!");
+                    setMessage('Unexpected: Ship took damage!');
                 }
             }
         }, 1000);
-
+    
         return () => clearInterval(interval);  // Clean up on component unmount
     }, [remainingTime, setGameState]);
+    
 
-	const handleWatch = (animeId: number) => {
-		setGameState((prevState) => ({
-			...prevState,
-			watchlist: [...prevState.watchlist, animeId],
-			resources: {
-				...prevState.resources,
-				fuel: prevState.resources.fuel - 10,
-			},
-			morale: prevState.morale + 5,
-		}));
-	};
+    const handleWatch = (animeId: number) => {
+        setGameState((prevState) => ({
+            ...prevState,
+            watchlist: [...prevState.watchlist, animeId],
+            resources: {
+                ...prevState.resources,
+                fuel: Math.max(prevState.resources.fuel - 10, 0),  // Ensure fuel doesn't go below 0
+            },
+            morale: prevState.morale + 5,
+        }));
+    };
+    
 
 	const handleSkip = (animeId: number) => {
 		setMessage('Opportunity missed!');
@@ -140,6 +151,23 @@ function AnimeList() {
 				<p>Morale: {gameState.morale}</p>
 				{message && <p>{message}</p>}
 			</div>
+            <p>Time Remaining: {Math.floor(remainingTime / 60)}:{remainingTime % 60 < 10 ? '0' : ''}{remainingTime % 60}</p>
+
+
+            {/* Conditional rendering (i.e. only shows if the Day is Complete) */}
+			{dayComplete && (
+				<div className='day-summary'>
+					<h2>Day complete!</h2>
+					<p>Here's what happened today:</p>
+					<p>Fuel consumed: {initialFuel - gameState.resources.fuel}</p>
+					<p>Food consumed: {initialFood - gameState.resources.food}</p>
+					<p>
+						Materials consumed:{' '}
+						{initialMaterials - gameState.resources.materials}
+					</p>
+					<p>Morale change: {gameState.morale - initialMorale}</p>
+				</div>
+			)}
 		</div>
 	);
 }
